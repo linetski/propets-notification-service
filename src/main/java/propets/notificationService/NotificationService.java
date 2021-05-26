@@ -3,6 +3,7 @@ package propets.notificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,15 +13,15 @@ import propets.model.Email;
 
 
 @Component
+@RefreshScope
 public class NotificationService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
-	private static final String EMAIL_TOPIC = "email";
 	
 	@Autowired
     JavaMailSender emailSender;
 	
-	@KafkaListener(topics = EMAIL_TOPIC, groupId = "foo")
+	@KafkaListener(topics = "${emailTopic}", groupId = "foo")
 	public void sendEmail(Email email) {
 		logger.info("email received from kafka: " + email);
 		SimpleMailMessage simpleMailMessage =constructEmail(email.getSubject(),email.getBody(),email.getEmailAdress());
