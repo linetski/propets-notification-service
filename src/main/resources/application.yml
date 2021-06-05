@@ -1,9 +1,3 @@
-server:
-  port: ${PORT:5000}
-security:
-  user:
-    password: ${eureka.password}
-
 eureka:
   client:
     serviceUrl:
@@ -11,5 +5,4 @@ eureka:
   
   instance:
       instanceId: ${DOMAIN_NAME:localhost}:${random.value}
-      hostname: ${DOMAIN_NAME}
-      nonSecurePort: 80
+      hostname: ${DOMAIN_NAME:localhost}
