@@ -2,9 +2,9 @@ package propets.notificationService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
@@ -21,9 +21,10 @@ public class NotificationService {
 	@Autowired
     JavaMailSender emailSender;
 	
-	@KafkaListener(topics = "${emailTopic}", groupId = "foo")
+	//@KafkaListener(topics = "${emailTopic}", groupId = "foo")
+	@RabbitListener(queues = "${rabbitmq.queue}")
 	public void sendEmail(Email email) {
-		logger.info("email received from kafka: " + email);
+		logger.info("email received from rabbit: " + email);
 		SimpleMailMessage simpleMailMessage =constructEmail(email.getSubject(),email.getBody(),email.getEmailAdress());
 		emailSender.send(simpleMailMessage);
 	}
